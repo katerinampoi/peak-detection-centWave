@@ -17,6 +17,7 @@ print("The number of MS2 scans is", len(scans_MS2))
 
 rois = []
 #for spec in itertools.islice(run, 200):
+#Draft try
 for spec in run:
     if spec.ID == 1 or len(rois) == 0:
         for mass in spec.mz:
