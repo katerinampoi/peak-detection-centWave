@@ -3,6 +3,7 @@ import matplotlib as plt
 import itertools
 import numpy as np
 from roi_handler import ROI
+import bisect
 
 mzml_file = "data/Beer_multibeers_5_T10_POS.mzML"
 # run = pymzml.run.Reader(mzml_file)
@@ -26,11 +27,13 @@ def find_rois(run):
             for mass in spec:
                 print("Now checking mass:", mass)
                 mass_added = False
+                rois.sort(key=lambda x: x.mz_mean)
                 for roi in rois:
                     print("Now checking roi:", roi.mz_values, roi.extended)
-                    difference = np.abs(mass - np.mean(roi.mz_values))
+                    difference = np.abs(mass - roi.mz_mean)
                     if difference <= max_difference:
                         roi.mz_values.append(mass)
+                        roi.mz_mean = np.mean(roi.mz_values)
                         roi.extended = True
                         print("mass added")
                         mass_added = True
@@ -63,8 +66,8 @@ def find_rois(run):
 
 if __name__ == '__main__':
     fake_data = [
-        [50, 55, 61],
-        [52, 60, 80, 49],
+        [50, 67, 80, 45, 55, 77, 61],
+        [52, 60, 80, 49,],
         [40, 20, 90]
     ]
     find_rois(fake_data)
