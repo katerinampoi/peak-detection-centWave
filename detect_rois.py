@@ -46,13 +46,12 @@ def find_rois(run):
                     waiting_rois.append(ROI(mz_values=[mass]))
                     print('Waiting rois now: ', [roi.get_mz_values() for roi in waiting_rois])
             for roi in rois:
-                print("clear phase: Roi:", roi.mz_values, roi.extended)
                 if not roi.extended:
                     if len(roi.mz_values) < p_min:
-                        print('Now removing roi:', roi.mz_values)
+                        print('Now removing roi:', roi.get_mz_values())
                         rois.remove(roi)
-                    elif len(roi.mz_values) >= p_min:
-                        print('Now adding roi:', roi.mz_values)
+                    elif len(roi.get_mz_values()) >= p_min:
+                        print('Now adding roi:', roi.get_mz_values())
                         final_rois.append(roi)
 
             rois.extend(list(waiting_rois))
