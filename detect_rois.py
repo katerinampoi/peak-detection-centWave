@@ -15,48 +15,48 @@ def find_rois(run):
     max_difference = 20
     p_min = 10
 
-    # Initialization - ROI(mz_values) added to rois
+    # Initialization
     for spec in run:
         if len(rois) == 0:
             for mass in spec:
                 roi = ROI(mz_values=[mass])
                 rois.append(roi)
 
-    # For current scan, add mass to ROI(mz_values) in rois
         else:
             for roi in rois:
-                roi.extended = False    # for every new scan, roi is taken as not extended
-            waiting_rois = []           # masses not been matched in this loop
+                roi.set_extended(False)                      # for every new scan, roi is taken as not extended
+            waiting_rois = []                                # masses not added in any roi temporarily added here
             for mass in spec:
-                print("Now checking mass:", mass)
                 mass_added = False
+                print("Now checking mass:", mass)
                 rois.sort(key=lambda x: x.get_mz_mean())     # rois are sorted according to ROI(mz_values) mean
                 for roi in rois:
-                    print("Now checking roi:", roi.get_mz_values(), roi.extended)
+                    print("Now checking roi:", roi.get_mz_values(), roi.get_extended())
                     difference = np.abs(mass - roi.get_mz_mean())
                     if difference <= max_difference:
-                        roi.set_mz_values(roi.get_mz_values().append(mass))
+                        roi.add_mz_value(mass)
                         roi.update_mz_mean()
-                        roi.extended = True
+                        roi.set_extended(True)
                         print("mass added")
                         mass_added = True
-                        break   # mass only goes into one roi
+                        break
 
                 if not mass_added:
                     waiting_rois.append(ROI(mz_values=[mass]))
-                    print('Waiting rois now: ', [roi.get_mz_values() for roi in waiting_rois])
+                    print("Waiting rois", waiting_rois)
             for roi in rois:
-                if not roi.extended:
-                    if len(roi.mz_values) < p_min:
-                        print('Now removing roi:', roi.get_mz_values())
+                if not roi.get_extended():
+                    if len(roi.get_mz_values()) < p_min:
+                        print('Removing roi:', roi.get_mz_values())
                         rois.remove(roi)
                     elif len(roi.get_mz_values()) >= p_min:
-                        print('Now adding roi:', roi.get_mz_values())
+                        print('Adding roi to final_rois:', roi.get_mz_values())
                         final_rois.append(roi)
 
             rois.extend(list(waiting_rois))
 
-    print('Now final rois:', [roi.mz_values for roi in final_rois])
+    print('Final rois:', [roi.get_mz_values() for roi in final_rois])
+
 
 if __name__ == '__main__':
     fake_data = [
