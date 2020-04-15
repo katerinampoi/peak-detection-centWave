@@ -30,13 +30,13 @@ def find_rois(run):
             for mass in spec:
                 print("Now checking mass:", mass)
                 mass_added = False
-                rois.sort(key=lambda x: x.mz_mean) # rois are sorted according to ROI(mz_values) mean
+                rois.sort(key=lambda x: x.get_mz_mean())     # rois are sorted according to ROI(mz_values) mean
                 for roi in rois:
-                    print("Now checking roi:", roi.mz_values, roi.extended)
-                    difference = np.abs(mass - roi.mz_mean)
+                    print("Now checking roi:", roi.get_mz_values(), roi.extended)
+                    difference = np.abs(mass - roi.get_mz_mean())
                     if difference <= max_difference:
-                        roi.mz_values.append(mass)
-                        roi.mz_mean = np.mean(roi.mz_values)     # mean updated
+                        roi.set_mz_values(roi.get_mz_values().append(mass))
+                        roi.update_mz_mean()
                         roi.extended = True
                         print("mass added")
                         mass_added = True
@@ -44,7 +44,7 @@ def find_rois(run):
 
                 if not mass_added:
                     waiting_rois.append(ROI(mz_values=[mass]))
-                    print('Waiting rois now: ', [roi.mz_values for roi in waiting_rois])
+                    print('Waiting rois now: ', [roi.get_mz_values() for roi in waiting_rois])
             for roi in rois:
                 print("clear phase: Roi:", roi.mz_values, roi.extended)
                 if not roi.extended:
