@@ -24,14 +24,16 @@ def find_rois(run):
 
         else:
             for roi in rois:
-                roi.set_extended(False)                      # for every new scan, roi is taken as not extended
-            waiting_rois = []                                # masses not added in any roi temporarily added here
-            print("=====================================================")
+                roi.set_extended(False)
+            # Masses not been matched are temporarily added here
+            waiting_rois = []
+            print("--------Scan ends here--------")
             print("Rois now:", [roi.get_mz_values() for roi in rois])
             for mass in spec:
                 mass_added = False
                 print("Now checking mass:", mass)
-                rois.sort(key=lambda x: x.get_mz_mean())     # rois are sorted according to ROI(mz_values) mean
+                # Rois are sorted according to ROI(mz_values) mean
+                rois.sort(key=lambda x: x.get_mz_mean())
                 for roi in rois:
                     print("Now checking roi:", roi.get_mz_values(), roi.get_extended())
                     difference = np.abs(mass - roi.get_mz_mean())
@@ -47,12 +49,14 @@ def find_rois(run):
                     waiting_rois.append(ROI(mz_values=[mass]))
                     print("Waiting rois:", [roi.get_mz_values() for roi in waiting_rois])
             for roi in rois:
+                # Finding final rois
                 if roi.get_extended() is False:
                     if len(roi.get_mz_values()) >= p_min:
                         print('Adding roi to final_rois:', roi.get_mz_values())
                         final_rois.append(roi)
+            # Keeping rois that have been extended
             rois = list(it.filterfalse(lambda x: not x.get_extended(), rois))
-            print("kept rois:", [roi.get_mz_values() for roi in rois])
+            print("rois kept:", [roi.get_mz_values() for roi in rois])
             rois.extend(list(waiting_rois))
 
     print('Final rois:', [roi.get_mz_values() for roi in final_rois])
