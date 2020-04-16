@@ -43,7 +43,7 @@ def find_rois(run):
 
                 if not mass_added:
                     waiting_rois.append(ROI(mz_values=[mass]))
-                    print("Waiting rois", waiting_rois)
+                    print("Waiting rois:", [roi.get_mz_values() for roi in waiting_rois])
             for roi in rois:
                 if not roi.get_extended():
                     if len(roi.get_mz_values()) < p_min:
@@ -60,11 +60,12 @@ def find_rois(run):
 
 if __name__ == '__main__':
     fake_data = [
+        [],
         [50, 25, 67, 80, 45, 55, 77, 61, 98, 47],
         [300, 102, 56, 73, 44, 52, 60, 80, 49, 89, 121, 54],
         [22, 69, 31, 49, 40, 20, 90],
         [54, 34, 89, 65, 45, 23, 90, 110, 53, 68],
-        [67, 35, 10, 24, 45, 18, 56, 78, 43, 107],
+        [67, 35, 10, 24, 310, 45, 18, 56, 78, 43, 107],
         [67, 56, 48, 92, 81, 25, 37, 67, 34, 90, 120, 111, 78],
         [102, 54, 89, 88, 65, 59, 43, 90, 23, 26, 31],
         [67, 39, 67, 102, 67, 78, 90, 49, 89, 55, 34, 29],
