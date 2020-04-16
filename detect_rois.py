@@ -1,6 +1,6 @@
 import pymzml
 import matplotlib as plt
-import itertools
+import itertools as it
 import numpy as np
 from roi_handler import ROI
 import bisect
@@ -26,6 +26,8 @@ def find_rois(run):
             for roi in rois:
                 roi.set_extended(False)                      # for every new scan, roi is taken as not extended
             waiting_rois = []                                # masses not added in any roi temporarily added here
+            print("=====================================================")
+            print("Rois now:", [roi.get_mz_values() for roi in rois])
             for mass in spec:
                 mass_added = False
                 print("Now checking mass:", mass)
@@ -45,14 +47,12 @@ def find_rois(run):
                     waiting_rois.append(ROI(mz_values=[mass]))
                     print("Waiting rois:", [roi.get_mz_values() for roi in waiting_rois])
             for roi in rois:
-                if not roi.get_extended():
-                    if len(roi.get_mz_values()) < p_min:
-                        print('Removing roi:', roi.get_mz_values())
-                        rois.remove(roi)
-                    elif len(roi.get_mz_values()) >= p_min:
+                if roi.get_extended() is False:
+                    if len(roi.get_mz_values()) >= p_min:
                         print('Adding roi to final_rois:', roi.get_mz_values())
                         final_rois.append(roi)
-
+            rois = list(it.filterfalse(lambda x: not x.get_extended(), rois))
+            print("kept rois:", [roi.get_mz_values() for roi in rois])
             rois.extend(list(waiting_rois))
 
     print('Final rois:', [roi.get_mz_values() for roi in final_rois])
