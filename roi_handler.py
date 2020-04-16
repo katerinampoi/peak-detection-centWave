@@ -4,10 +4,10 @@ import numpy as np
 class ROI:
     def __init__(self, mz_values):
         self.mz_values = mz_values
-        self.intensity_values = []
-        self.RT_values = []
-        self.extended = False
         self.mz_mean = np.mean(mz_values)
+        self.extended = False
+        self.intensity_values = []
+        self.retention_time_values = []
 
     def get_mz_values(self):
         return self.mz_values
@@ -26,6 +26,15 @@ class ROI:
 
     def set_extended(self, extended):
         self.extended = extended
+
+    def get_intensity_values(self):
+        return self.intensity_values
+
+    def get_retention_time_values(self):
+        return self.retention_time_values
+
+
+
 
 
 
