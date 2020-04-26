@@ -5,8 +5,6 @@ import numpy as np
 from roi_handler import ROI
 import bisect
 
-mzml_file = "data/Beer_multibeers_5_T10_POS.mzML"
-# run = pymzml.run.Reader(mzml_file)
 
 
 def find_rois(run):
