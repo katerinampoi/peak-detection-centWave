@@ -33,11 +33,11 @@ def find_rois(run):
                 print("Now checking mass:", mass)
                 # Rois are sorted according to ROI(mz_values) mean
                 rois.sort(key=lambda x: x.get_mz_mean())
-                # Index of tested mass in the sorted list
+
                 actual_index = bisect_left(rois, mass)
                 print("Bisect shows index:", actual_index)
                 difference_1 = np.abs(mass - rois[actual_index - 1].get_mz_mean())
-                #
+
                 if actual_index == len(rois):
                     if difference_1 < max_difference:
                         rois[actual_index - 1].add_mz_value(mass)
@@ -68,7 +68,7 @@ def find_rois(run):
                         waiting_rois.append(ROI(mz_values=[mass]))
 
             for roi in rois:
-                print("Checking roi:", roi.get_mz_values())
+                print("Rois formed in this scan:", roi.get_mz_values())
                 print("roi extended:", roi.get_extended())
                 # Finding final rois
                 if roi.get_extended() is False:
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         [78, 77, 56, 34, 90, 101, 24, 54, 34, 78, 43, 44],
         [99, 100, 56, 78, 98, 43, 56, 89, 45, 22, 21, 90, 34, 23, 89],
         [78, 45, 33, 29, 103, 89, 67, 87, 73, 57, 89, 83],
-        [44, 89, 65, 65, 45, 34, 21, 19, 121, 55, 49, 100]
+        [44, 89, 65, 65, 45, 34, 21, 19, 121, 55, 49, 100], [400]
     ]
 
     find_rois(fake_data)
