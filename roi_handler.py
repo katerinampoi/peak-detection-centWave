@@ -9,6 +9,7 @@ class ROI:
         self.intensity_values = []
         self.retention_time_values = []
 
+    # Overwrite lower_than method for ROI class
     def __lt__(self, other):
         return self.mz_mean < other
 
