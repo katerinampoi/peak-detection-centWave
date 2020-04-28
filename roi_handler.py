@@ -9,6 +9,9 @@ class ROI:
         self.intensity_values = []
         self.retention_time_values = []
 
+    def __lt__(self, other):
+        return self.mz_mean < other
+
     def get_mz_values(self):
         return self.mz_values
 
