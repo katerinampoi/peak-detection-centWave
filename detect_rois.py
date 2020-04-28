@@ -33,13 +33,14 @@ def find_rois(run):
                 print("Now checking mass:", mass)
                 # Rois are sorted according to ROI(mz_values) mean
                 rois.sort(key=lambda x: x.get_mz_mean())
-
+                # Searching the index of tested mass in the sorted rois list
                 actual_index = bisect_left(rois, mass)
                 print("Bisect shows index:", actual_index)
-                difference_1 = np.abs(mass - rois[actual_index - 1].get_mz_mean())
+                diff_left = np.abs(mass - rois[actual_index - 1].get_mz_mean())
 
+                # When tested mass index = rois[-1]
                 if actual_index == len(rois):
-                    if difference_1 < max_difference:
+                    if diff_left < max_difference:
                         rois[actual_index - 1].add_mz_value(mass)
                         rois[actual_index - 1].update_mz_mean()
                         rois[actual_index - 1].set_extended(True)
@@ -49,13 +50,13 @@ def find_rois(run):
                         waiting_rois.append(ROI(mz_values=[mass]))
                         print("mass added to waiting rois")
                 else:
-                    difference_2 = np.abs(mass - rois[actual_index].get_mz_mean())
-                    if difference_1 < difference_2:
+                    diff_right = np.abs(mass - rois[actual_index].get_mz_mean())
+                    if diff_left < diff_right:
                         index_to_look = actual_index - 1
-                        min_diff = difference_1
+                        min_diff = diff_left
                     else:
                         index_to_look = actual_index
-                        min_diff = difference_2
+                        min_diff = diff_right
 
                     if min_diff < max_difference:
                         print('Min diff', min_diff)
@@ -70,12 +71,12 @@ def find_rois(run):
             for roi in rois:
                 print("Rois formed in this scan:", roi.get_mz_values())
                 print("roi extended:", roi.get_extended())
-                # Finding final rois
+                # Finding the actual rois
                 if roi.get_extended() is False:
                     if len(roi.get_mz_values()) >= p_min:
                         print('Adding roi to final_rois:', roi.get_mz_values())
                         final_rois.append(roi)
-                # Keeping rois that have been extended
+            # Keeping rois that have been extended
             rois = list(it.filterfalse(lambda x: not x.get_extended(), rois))
             print("Rois kept after scan ends:", [roi.get_mz_values() for roi in rois])
             rois.extend(list(waiting_rois))
