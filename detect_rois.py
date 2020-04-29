@@ -27,7 +27,7 @@ def find_rois(run):
             # Mass not been matched to any roi is temporarily added in waiting_rois
             waiting_rois = []
             print("-----------------------Scan ends here-----------------------")
-            print("Rois now:", [roi.get_mz_values() for roi in rois])
+            print("Rois list now:", [roi.get_mz_values() for roi in rois])
             for mass in spec:
                 mass_added = False
                 print("Now checking mass:", mass)
@@ -45,7 +45,7 @@ def find_rois(run):
                         rois[actual_index - 1].add_mz_value(mass)
                         rois[actual_index - 1].update_mz_mean()
                         rois[actual_index - 1].set_extended(True)
-                        print("mass added")
+                        print("Mass added")
                         mass_added = True
                     else:
                         waiting_rois.append(ROI(mz_values=[mass]))
@@ -59,15 +59,16 @@ def find_rois(run):
                         index_to_look = actual_index
                         min_diff = diff_right
 
-                    if min_diff < max_difference:
+                    if min_diff <= max_difference:
                         print('Min diff', min_diff)
                         rois[index_to_look].add_mz_value(mass)
                         rois[index_to_look].add_mz_value(mass)
                         rois[index_to_look].set_extended(True)
-                        print("mass added")
+                        print("Mass added to index:", index_to_look)
                         mass_added = True
                     else:
                         waiting_rois.append(ROI(mz_values=[mass]))
+                        print("Mass added to waiting rois")
 
             for roi in rois:
                 print("roi extended:", roi.get_extended())
